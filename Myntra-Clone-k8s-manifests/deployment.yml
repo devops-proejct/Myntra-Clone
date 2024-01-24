@@ -1,1 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: mytradep
+spec:
+  selector:
+    matchLabels:
+      app: myntrapod
+  template:
+    metadata:
+      name: myntrapod
+      labels:
+        app: myntrapod
+    spec:
+      containers:
+      - name: netflix
+        image:  kesav38/myntraapp:Newtag
+        ports:
+        - containerPort: 3000
+        readinessProbe:
+          tcpSocket:
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 10 
 
+---
+apiVersion: v1 
+kind: Service
+metadata:
+  name: myntrasvc
+spec:
+  type: LoadBalancer
+  selector:
+    app: netflixpod
+  ports:
+  - port: 80
+    targetPort: 3000
